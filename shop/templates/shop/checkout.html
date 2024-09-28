@@ -1,0 +1,30 @@
+{% extends 'shop/base.html' %}
+
+{% block title %}Checkout - Coffee Shop{% endblock %}
+
+{% block content %}
+<div class="container my-5">
+    <h1>Checkout</h1>
+    <h3>Your Order</h3>
+    <ul class="list-group mb-3">
+        {% for item in order.orderitem_set.all %}
+            <li class="list-group-item d-flex justify-content-between">
+                <div>
+                    <h6 class="my-0">{{ item.product.name }}</h6>
+                    <small class="text-muted">Quantity: {{ item.quantity }}</small>
+                </div>
+                <span class="text-muted">${{ item.get_total }}</span>
+            </li>
+        {% endfor %}
+        <li class="list-group-item d-flex justify-content-between">
+            <span>Total (USD)</span>
+            <strong>${{ order.get_cart_total }}</strong>
+        </li>
+    </ul>
+    <form method="post">
+        {% csrf_token %}
+        <!-- Add payment fields here -->
+        <button type="submit" class="btn btn-primary btn-lg btn-block">Complete Order</button>
+    </form>
+</div>
+{% endblock %}

@@ -1,0 +1,89 @@
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    padding-top: 60px;
+}
+
+header, footer {
+    background-color: #6b4f4f;
+    color: #fff;
+    text-align: center;
+    padding: 1em 0;
+}
+
+nav a {
+    margin: 0 1em;
+    color: #fff;
+    text-decoration: none;
+}
+
+.product-list {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-around;
+}
+
+.product-item {
+    border: 1px solid #ccc;
+    width: 30%;
+    margin: 1em 0;
+    padding: 1em;
+    text-align: center;
+}
+
+.product-item img {
+    max-width: 300px;
+    height: 300px;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 1em 0;
+}
+
+th, td {
+    border: 1px solid #ddd;
+    padding: 0.5em;
+    text-align: center;
+}
+
+button {
+    background-color: #6b4f4f;
+    color: #fff;
+    border: none;
+    padding: 0.5em 1em;
+    cursor: pointer;
+}
+
+button:hover {
+    background-color: #5a3e3e;
+}
+
+/* Block Element Modifier (BEM) methodology example */
+.card {
+    &__title {
+        font-size: 1.25rem;
+        font-weight: bold;
+    }
+}
+
+.navbar-brand {
+    font-weight: bold;
+}
+
+.card-title {
+    font-size: 1.25rem;
+    font-weight: bold;
+}
+
+.btn-primary {
+    background-color: #6b4f4f;
+    border-color: #6b4f4f;
+}
+
+.btn-primary:hover {
+    background-color: #5a3e3e;
+    border-color: #5a3e3e;
+}
