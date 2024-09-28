@@ -1,2 +1,5 @@
 .venv/
 .cursorrules
+db.sqlite3
+__pycache__/
+finalstore/__pycache__/
