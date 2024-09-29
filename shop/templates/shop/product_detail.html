@@ -18,6 +18,7 @@
             <p>{{ product.description }}</p>
             <h4>${{ product.price }}</h4>
             <a href="{% url 'shop:add_to_cart' product.id %}" class="btn btn-primary">Add to Cart</a>
+            <b href="{% url 'shop:product_list' %}" class="btn btn-secondary">Back</b>
         </div>
     </div>
 </div>

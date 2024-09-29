@@ -17,6 +17,7 @@
             </li>
         {% endfor %}
         <li class="list-group-item d-flex justify-content-between">
+            <span>Tax + {{ order.get_tax_amount }} </span>
             <span>Total (USD)</span>
             <strong>${{ order.get_cart_total }}</strong>
         </li>

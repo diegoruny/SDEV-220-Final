@@ -2,6 +2,7 @@ from django.db import models
 from django.contrib.auth.models import User
 from django.db.models.signals import post_save
 from django.dispatch import receiver
+import decimal
 
 class Customer(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
@@ -27,11 +28,27 @@ class Order(models.Model):
     date_ordered = models.DateTimeField(auto_now_add=True)
     complete = models.BooleanField(default=False)
     transaction_id = models.CharField(max_length=100, null=True)
+
+    @property
+    def get_cart_subtotal(self):
+        orderitems = self.orderitem_set.all()
+        return round(sum([item.get_total for item in orderitems]),2)
+    
+    @property
+    def get_tax_amount(self):
+        tax_rate = decimal.Decimal(0.08) # 8% tax rate
+        orderitems = self.orderitem_set.all()
+        subtotal = round(sum([item.get_total for item in orderitems]),2)
+        return round(tax_rate * subtotal,2)
     
     @property
     def get_cart_total(self):
+        tax_rate = decimal.Decimal(0.08)
         orderitems = self.orderitem_set.all()
-        return sum([item.get_total for item in orderitems])
+        subtotal = round(sum([item.get_total for item in orderitems]),2)
+        tax_amount = round(subtotal * tax_rate,2)
+        
+        return (tax_amount + subtotal)
     
     @property
     def get_cart_items(self):
@@ -44,7 +61,7 @@ class Order(models.Model):
 class OrderItem(models.Model):
     product = models.ForeignKey(Product, on_delete=models.SET_NULL, null=True)
     order = models.ForeignKey(Order, on_delete=models.SET_NULL, null=True)
-    quantity = models.IntegerField(default=1)
+    quantity = models.IntegerField(default=0)
     date_added = models.DateTimeField(auto_now_add=True)
     
     @property

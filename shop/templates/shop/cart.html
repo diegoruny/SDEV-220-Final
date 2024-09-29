@@ -19,13 +19,18 @@
                 {% for item in items %}
                     <tr>
                         <td>{{ item.product.name }}</td>
-                        <td>{{ item.quantity }}</td>
+                        <td>
+                            -
+                            {{ item.quantity }}
+                            +
+                        </td>
                         <td>${{ item.product.price }}</td>
                         <td>${{ item.get_total }}</td>
                     </tr>
                 {% endfor %}
             </tbody>
         </table>
+        <h4>Sub: ${{ order.get_cart_subtotal }}</h4>
         <h3>Total: ${{ order.get_cart_total }}</h3>
         <a href="{% url 'shop:checkout' %}" class="btn btn-success">Proceed to Checkout</a>
     {% else %}

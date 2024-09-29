@@ -26,6 +26,18 @@ def add_to_cart(request, product_id):
     return redirect('shop:cart')
 
 @login_required
+def remove_from_cart(request, product_id):
+    """Take all instances of a product out of the shopping cart."""
+    #product = get_object_or_404(Product, id=product_id)
+    customer, created = Customer.objects.get(user=request.user)
+    order, created = Order.objects.get(customer=customer)
+    items = OrderItem.objects.get(order=order)
+    if product_id in items:
+        item = OrderItem.objects.get(product=product_id)
+        item.objects.delete() # remove the item
+    return redirect('shop:cart')
+
+@login_required
 def cart(request):
     """Display the shopping cart."""
     customer, created = Customer.objects.get_or_create(user=request.user)
@@ -47,3 +59,12 @@ def checkout(request):
         return redirect('shop:product_list')
     context = {'order': order}
     return render(request, 'shop/checkout.html', context)
+
+@login_required
+def cancel_order(request):
+    """Handle the checkout process."""
+    customer, created = Customer.objects.get_or_create(user=request.user)
+    order, created = Order.objects.get_or_create(customer=customer, complete=False)
+
+    order.objects.delete()
+    return redirect('shop:product_list')
