@@ -8,6 +8,11 @@ class Customer(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     # Additional fields (optional)
     address = models.CharField(max_length=255, null=True, blank=True)
+    reward_points = models.IntegerField(default=0,null=True,blank=True)
+
+    @property
+    def return_points(self):
+        return self.reward_points
 
     def __str__(self):
         return self.user.username
@@ -19,6 +24,7 @@ class Product(models.Model):
     price = models.DecimalField(max_digits=6, decimal_places=2)
     stock = models.PositiveIntegerField()
     image = models.ImageField(upload_to='products/', blank=True, null=True)
+    point_value = models.IntegerField(default=25,blank=True,null=True) # Number of points awarded per purchase
 
     def __str__(self):
         return self.name
@@ -51,12 +57,27 @@ class Order(models.Model):
         return (tax_amount + subtotal)
     
     @property
+    def get_cart_point_total(self):
+        orderitems = self.orderitem_set.all()
+        return sum([item.get_points for item in orderitems])
+    
+    @property
     def get_cart_items(self):
         orderitems = self.orderitem_set.all()
         return sum([item.quantity for item in orderitems])
 
     def __str__(self):
         return f"Order {self.id}"
+    
+    def reward_points(self):
+        """Add points to customer account"""
+        add_points = self.get_cart_point_total
+        account = Customer.objects.get(id=self.customer.id)
+        current_points = account.return_points
+        new_points = (current_points + add_points)
+        account.reward_points=new_points
+        account.save()
+        return new_points
 
 class OrderItem(models.Model):
     product = models.ForeignKey(Product, on_delete=models.SET_NULL, null=True)
@@ -67,6 +88,10 @@ class OrderItem(models.Model):
     @property
     def get_total(self):
         return self.product.price * self.quantity
+    
+    @property
+    def get_points(self):
+        return self.product.point_value * self.quantity
 
     def __str__(self):
         return self.product.name

@@ -54,6 +54,7 @@ def checkout(request):
     # Implement payment processing logic here
     # For now, we'll set the order as complete
     if request.method == 'POST':
+        order.reward_points() # add points to user account
         order.complete = True
         order.save()
         return redirect('shop:product_list')
@@ -62,9 +63,8 @@ def checkout(request):
 
 @login_required
 def cancel_order(request):
-    """Handle the checkout process."""
     customer, created = Customer.objects.get_or_create(user=request.user)
     order, created = Order.objects.get_or_create(customer=customer, complete=False)
 
     order.objects.delete()
-    return redirect('shop:product_list')
+    return render(request,'shop/product_list.html')

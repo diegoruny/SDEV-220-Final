@@ -17,6 +17,7 @@
             <h2>{{ product.name }}</h2>
             <p>{{ product.description }}</p>
             <h4>${{ product.price }}</h4>
+            <h4>{{ product.point_value }} points</h4>
             <a href="{% url 'shop:add_to_cart' product.id %}" class="btn btn-primary">Add to Cart</a>
             <b href="{% url 'shop:product_list' %}" class="btn btn-secondary">Back</b>
         </div>

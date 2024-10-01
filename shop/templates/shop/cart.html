@@ -30,6 +30,7 @@
                 {% endfor %}
             </tbody>
         </table>
+        <h4>Points: {{ order.get_cart_point_total }}</h4>
         <h4>Sub: ${{ order.get_cart_subtotal }}</h4>
         <h3>Total: ${{ order.get_cart_total }}</h3>
         <a href="{% url 'shop:checkout' %}" class="btn btn-success">Proceed to Checkout</a>
