@@ -12,11 +12,12 @@ class Customer(models.Model):
 
     @property
     def return_points(self):
+        
         return self.reward_points
 
     def __str__(self):
         return self.user.username
-
+    
 class Product(models.Model):
     """Model representing a coffee product."""
     name = models.CharField(max_length=255)
