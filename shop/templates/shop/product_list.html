@@ -9,11 +9,11 @@
     <div class="row">
         {% for product in products %}
             <div class="col-md-4">
-                <div class="card mb-4">
+                <div class="card bg-light mb-3" style="max-width: 18rem;">
                     {% if product.image %}
-                        <img src="{{ product.image.url }}" class="img-fluid" alt="{{ product.name }}">
+                        <img src="{{ product.image.url }}" class="card-img-top" alt="{{ product.name }}">
                     {% else %}
-                        <img src="{% static 'shop/templates/shop/images/placeholder.jpg' %}" class="img-fluid" alt="Placeholder">
+                        <img src="{% static 'shop/templates/shop/images/placeholder.jpg' %}" class="card-img-top" alt="Placeholder">
                     {% endif %}
                     <div class="card-body">
                         <h5 class="card-title">{{ product.name }}</h5>

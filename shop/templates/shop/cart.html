@@ -10,9 +10,10 @@
             <thead>
                 <tr>
                     <th>Product</th>
-                    <th>Quantity</th>
+                    <th style="width: 150px;">Quantity</th>
                     <th>Price</th>
                     <th>Subtotal</th>
+                    <th>Actions</th>
                 </tr>
             </thead>
             <tbody>
@@ -20,24 +21,30 @@
                     <tr>
                         <td>{{ item.product.name }}</td>
                         <td>
-                            -
-                            {{ item.quantity }}
-                            +
+                            <div class="input-group">
+                                <a href="{% url 'shop:update_cart' item.product.id 'decrease' %}" class="btn btn-outline-secondary">-</a>
+                                <input type="text" class="form-control text-center" value="{{ item.quantity }}" readonly>
+                                <a href="{% url 'shop:update_cart' item.product.id 'increase' %}" class="btn btn-outline-secondary">+</a>
+                            </div>
                         </td>
                         <td>${{ item.product.price }}</td>
                         <td>${{ item.get_total }}</td>
+                        <td>
+                            <a href="{% url 'shop:remove_item' item.product.id %}" class="btn btn-danger">Delete</a>
+                        </td>
                     </tr>
                 {% endfor %}
             </tbody>
         </table>
         <h4>Points: {{ order.get_cart_point_total }}</h4>
-        <h4>Sub: ${{ order.get_cart_subtotal }}</h4>
+        <h4>Subtotal: ${{ order.get_cart_subtotal }}</h4>
+        <h4>Tax: ${{ order.get_tax_amount }}</h4>
         <h3>Total: ${{ order.get_cart_total }}</h3>
         <a href="{% url 'shop:checkout' %}" class="btn btn-success">Proceed to Checkout</a>
         <a href="{% url 'shop:clear_cart' %}" class="btn btn-danger">Clear Cart</a>
     {% else %}
         <p>Your cart is empty.</p>
-        <a href="{% url 'shop:product_list' %}" class="btn-primary">Add some!</a>
+        <a href="{% url 'shop:product_list' %}" class="btn btn-primary">Add some!</a>
     {% endif %}
 </div>
 {% endblock %}

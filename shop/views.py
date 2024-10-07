@@ -20,6 +20,7 @@ def product_detail(request, product_id):
     context = {'product': product,'user' : customer, 'points' : points}
     return render(request, 'shop/product_detail.html', context = context)
 
+
 @login_required
 def add_to_cart(request, product_id):
     """Add a product to the shopping cart."""
@@ -76,3 +77,30 @@ def cancel_order(request):
 
     order.delete()
     return redirect('shop:product_list')
+
+@login_required
+def update_cart(request, product_id, action):
+    """Increase or decrease the quantity of a product in the cart."""
+    product = get_object_or_404(Product, id=product_id)
+    customer, _ = Customer.objects.get_or_create(user=request.user)
+    order, _ = Order.objects.get_or_create(customer=customer, complete=False)
+    order_item, _ = OrderItem.objects.get_or_create(order=order, product=product)
+
+    if action == 'increase':
+        order_item.quantity += 1
+        order_item.save()
+    elif action == 'decrease':
+        order_item.quantity -= 1
+        if order_item.quantity <= 0:
+            order_item.delete()
+        else:
+            order_item.save()
+    return redirect('shop:cart')
+
+@login_required
+def remove_item(request, product_id):
+    """Remove an item entirely from the cart."""
+    customer, _ = Customer.objects.get_or_create(user=request.user)
+    order, _ = Order.objects.get_or_create(customer=customer, complete=False)
+    OrderItem.objects.filter(order=order, product_id=product_id).delete()
+    return redirect('shop:cart')
