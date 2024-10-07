@@ -12,11 +12,18 @@ class Customer(models.Model):
 
     @property
     def return_points(self):
-        
         return self.reward_points
 
     def __str__(self):
         return self.user.username
+    
+    def add_points(self,amount):
+        self.reward_points += amount
+        self.save()
+
+    def deduct_points(self,amount):
+        self.reward_points -= amount
+        self.save()
     
 class Product(models.Model):
     """Model representing a coffee product."""
@@ -35,6 +42,7 @@ class Order(models.Model):
     date_ordered = models.DateTimeField(auto_now_add=True)
     complete = models.BooleanField(default=False)
     transaction_id = models.CharField(max_length=100, null=True)
+    reward_applied = models.BooleanField(default=False)
 
     @property
     def get_cart_subtotal(self):
@@ -45,14 +53,39 @@ class Order(models.Model):
     def get_tax_amount(self):
         tax_rate = decimal.Decimal(0.08) # 8% tax rate
         orderitems = self.orderitem_set.all()
-        subtotal = round(sum([item.get_total for item in orderitems]),2)
+
+        if self.reward_applied == True:
+            discount = self.get_reward_discount
+        else: 
+            discount = decimal.Decimal(0.00)
+
+        subtotal = round(sum([item.get_total for item in orderitems]),2) - discount
         return round(tax_rate * subtotal,2)
+    
+    @property
+    def get_reward_discount(self):
+        """Apply a discount equal to the price of the highest item"""
+        highest_price = decimal.Decimal(0.00)
+        discount = decimal.Decimal(0.00) 
+
+        for item in OrderItem.objects.filter(order=self):
+            item_product = item.get_product
+            if item_product.price > highest_price:
+                highest_price = item_product.price
+                discount = highest_price
+        return discount
     
     @property
     def get_cart_total(self):
         tax_rate = decimal.Decimal(0.08)
         orderitems = self.orderitem_set.all()
-        subtotal = round(sum([item.get_total for item in orderitems]),2)
+
+        if self.reward_applied == True:
+            discount = self.get_reward_discount
+        else: 
+            discount = decimal.Decimal(0.00)
+
+        subtotal = round(sum([item.get_total for item in orderitems]),2) - discount
         tax_amount = round(subtotal * tax_rate,2)
         
         return (tax_amount + subtotal)
@@ -93,6 +126,10 @@ class OrderItem(models.Model):
     @property
     def get_points(self):
         return self.product.point_value * self.quantity
+    
+    @property
+    def get_product(self):
+        return self.product
 
     def __str__(self):
         return self.product.name

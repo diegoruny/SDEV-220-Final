@@ -104,3 +104,37 @@ def remove_item(request, product_id):
     order, _ = Order.objects.get_or_create(customer=customer, complete=False)
     OrderItem.objects.filter(order=order, product_id=product_id).delete()
     return redirect('shop:cart')
+
+@login_required
+def apply_discount(request):
+    """Spend 100 points to get a free product."""
+    customer, created = Customer.objects.get_or_create(user=request.user)
+    order, created = Order.objects.get_or_create(customer=customer, complete=False)
+    points = customer.return_points
+
+    if customer.reward_points >= 100:
+        order.reward_applied = True # Applies discount to current order
+        order.save()
+        customer.deduct_points(100) # Deduct points
+        print('Reward applied')
+    else:
+        print('Not enough points')
+    
+    return redirect('shop:checkout')
+
+@login_required
+def remove_discount(request):
+    """Refund 100 points, undo discount."""
+    customer, created = Customer.objects.get_or_create(user=request.user)
+    order, created = Order.objects.get_or_create(customer=customer, complete=False)
+    points = customer.return_points
+
+    if order.reward_applied == True:
+        customer.add_points(100) # add points
+        order.reward_applied = False # set false
+        order.save()
+        print('Points refunded')
+    else:
+        print('No reward applied')
+    
+    return redirect('shop:checkout')

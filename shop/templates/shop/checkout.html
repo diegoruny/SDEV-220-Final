@@ -17,6 +17,9 @@
             </li>
         {% endfor %}
         <li class="list-group-item d-flex justify-content-between">
+        {% if order.reward_applied == True %}
+            <span>Discount - {{ order.get_reward_discount }} </span>
+        {% endif %}
             <span>Tax + {{ order.get_tax_amount }} </span>
             <span>Total (USD)</span>
             <strong>${{ order.get_cart_total }}</strong>
@@ -26,6 +29,14 @@
         {% csrf_token %}
         <!-- Add payment fields here -->
         <button type="submit" class="btn btn-primary btn-lg btn-block">Complete Order</button>
+
+        <div class="btn">
+            {% if order.reward_applied != True %}
+                <a href="{% url 'shop:apply_discount' %}" class="btn btn-secondary">Apply 100pt Discount</a>
+            {% else %}
+                <a href="{% url 'shop:remove_discount' %}" class="btn btn-secondary">Remove Discount</a>
+            {% endif %}
+        </div>
     </form>
     <div class="btn">
         <a href="{% url 'shop:cart' %}" class="btn btn-secondary">Back</a>
