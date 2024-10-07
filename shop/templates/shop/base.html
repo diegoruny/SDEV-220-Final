@@ -37,7 +37,9 @@
         </div>
     </nav>
 
-    <b style="margin-left: 40px">Your points: {{ points }}</b>
+    {% if user.is_authenticated %}
+        <b style="margin-left: 40px">Your points: {{ points }}</b>
+    {% endif %}
 
     {% block content %}
     <!-- Page specific content will go here -->

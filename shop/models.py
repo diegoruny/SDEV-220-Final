@@ -47,7 +47,13 @@ class Order(models.Model):
     @property
     def get_cart_subtotal(self):
         orderitems = self.orderitem_set.all()
-        return round(sum([item.get_total for item in orderitems]),2)
+
+        if self.reward_applied == True:
+            discount = self.get_reward_discount
+        else: 
+            discount = decimal.Decimal(0.00)
+
+        return round(sum([item.get_total for item in orderitems]),2) - discount
     
     @property
     def get_tax_amount(self):

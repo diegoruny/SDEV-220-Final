@@ -29,14 +29,15 @@
         {% csrf_token %}
         <!-- Add payment fields here -->
         <button type="submit" class="btn btn-primary btn-lg btn-block">Complete Order</button>
-
-        <div class="btn">
-            {% if order.reward_applied != True %}
-                <a href="{% url 'shop:apply_discount' %}" class="btn btn-secondary">Apply 100pt Discount</a>
-            {% else %}
-                <a href="{% url 'shop:remove_discount' %}" class="btn btn-secondary">Remove Discount</a>
-            {% endif %}
-        </div>
+        {% if user.is_authenticated %}
+            <div class="btn">
+                {% if order.reward_applied != True %}
+                    <a href="{% url 'shop:apply_discount' %}" class="btn btn-secondary">Apply 100pt Discount</a>
+                {% else %}
+                    <a href="{% url 'shop:remove_discount' %}" class="btn btn-secondary">Remove Discount</a>
+                {% endif %}
+            </div>
+        {% endif %}
     </form>
     <div class="btn">
         <a href="{% url 'shop:cart' %}" class="btn btn-secondary">Back</a>
