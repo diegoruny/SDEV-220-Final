@@ -31,14 +31,16 @@ def product_detail(request, product_id):
 @login_required
 def add_to_cart(request, product_id):
     """Add a product to the shopping cart."""
-    product = get_object_or_404(Product, id=product_id)
-    customer, created = Customer.objects.get_or_create(user=request.user)
-    order, created = Order.objects.get_or_create(customer=customer, complete=False)
-    order_item, created = OrderItem.objects.get_or_create(order=order, product=product)
-    order_item.quantity += 1
-    order_item.save()
-    return redirect('shop:login')
-    # return redirect('shop:cart') Allow users to stay on the product list without having to go the cart
+    if request.user.is_authenticated:
+        product = get_object_or_404(Product, id=product_id)
+        customer, created = Customer.objects.get_or_create(user=request.user)
+        order, created = Order.objects.get_or_create(customer=customer, complete=False)
+        order_item, created = OrderItem.objects.get_or_create(order=order, product=product)
+        order_item.quantity += 1
+        order_item.save()
+        return redirect('shop:cart') #Allow users to stay on the product list without having to go the cart
+    else:
+        return redirect('shop:login')
 
 @login_required
 def cart(request):
