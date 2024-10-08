@@ -64,7 +64,8 @@ def checkout(request):
         order.reward_points() # add points to user account
         order.complete = True
         order.save()
-        return redirect('shop:product_list')
+        context = {'order': order, 'points' : points}
+        return render(request,'shop/order_complete.html',context)
     context = {'order': order, 'points' : points}
     return render(request, 'shop/checkout.html', context)
 
