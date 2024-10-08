@@ -5,16 +5,24 @@ from django.contrib.auth.decorators import login_required
 # Create your views here.
 def product_list(request):
     """Display a list of available coffee products."""
-    # customer, created = Customer.objects.get_or_create(user=request.user)
-    # points = customer.return_points
+    if request.user.is_authenticated:
+        customer, created = Customer.objects.get_or_create(user=request.user)
+        points = customer.return_points
+    else:
+        customer = None
+        points = 0
     products = Product.objects.all()
     context = {'products': products}
     return render(request, 'shop/product_list.html', context = context)
 
 def product_detail(request, product_id):
     """Display product details."""
-    customer, created = Customer.objects.get_or_create(user=request.user)
-    points = customer.return_points
+    if request.user.is_authenticated:
+        customer, created = Customer.objects.get_or_create(user=request.user)
+        points = customer.return_points
+    else:
+        customer = None
+        points = 0
     product = get_object_or_404(Product, id=product_id)
     context = {'product': product,'user' : customer, 'points' : points}
     return render(request, 'shop/product_detail.html', context = context)
