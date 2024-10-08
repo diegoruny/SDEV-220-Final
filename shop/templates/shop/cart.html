@@ -39,12 +39,14 @@
         {% if order.reward_applied == True %}
             <h5>Discount applied: -${{ order.get_reward_discount }}</h5>
         {% endif %}
-        <h5>Subtotal: ${{ order.get_cart_subtotal }}</h5>
-        <h5>Tax: ${{ order.get_tax_amount }}</h5>
-        <h3>Total: ${{ order.get_cart_total }}</h3>
-        <h5>Points to earn: {{ order.get_cart_point_total }}</h5>
-        <a href="{% url 'shop:checkout' %}" class="btn btn-success">Proceed to Checkout</a>
-        <a href="{% url 'shop:clear_cart' %}" class="btn btn-danger">Clear Cart</a>
+        <div class="d-flex justify-content-between">
+            <h5>Subtotal: ${{ order.get_cart_subtotal }}</h5>
+            <h5>Tax: ${{ order.get_tax_amount }}</h5>
+            <h3>Total: ${{ order.get_cart_total }}</h3>
+            <h5>Points to earn: {{ order.get_cart_point_total }}</h5>
+            <a href="{% url 'shop:checkout' %}" class="btn btn-success">Proceed to Checkout</a>
+            <a href="{% url 'shop:clear_cart' %}" class="btn btn-danger">Clear Cart</a>
+        </div>
     {% else %}
         <p>Your cart is empty.</p>
         <a href="{% url 'shop:product_list' %}" class="btn btn-primary">Add some!</a>

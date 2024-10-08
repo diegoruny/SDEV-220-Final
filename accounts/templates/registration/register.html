@@ -2,7 +2,7 @@
 
 {% block content %}
 
-<form method="post" action="{% url 'accounts:register' %}">
+<form method="post" action="{% url 'accounts:register' %}" class="mx-auto">
     {% csrf_token %}
     {{ form.as_div }}
     <button type="submit">Register</button>

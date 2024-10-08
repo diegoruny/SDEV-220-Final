@@ -3,13 +3,12 @@ from .models import Product, Order, OrderItem, Customer
 from django.contrib.auth.decorators import login_required
 
 # Create your views here.
-
 def product_list(request):
     """Display a list of available coffee products."""
-    customer, created = Customer.objects.get_or_create(user=request.user)
-    points = customer.return_points
+    # customer, created = Customer.objects.get_or_create(user=request.user)
+    # points = customer.return_points
     products = Product.objects.all()
-    context = {'products': products,'user' : customer, 'points' : points}
+    context = {'products': products}
     return render(request, 'shop/product_list.html', context = context)
 
 def product_detail(request, product_id):
@@ -30,7 +29,7 @@ def add_to_cart(request, product_id):
     order_item, created = OrderItem.objects.get_or_create(order=order, product=product)
     order_item.quantity += 1
     order_item.save()
-    return redirect('shop:product_list')
+    return redirect('shop:login')
     # return redirect('shop:cart') Allow users to stay on the product list without having to go the cart
 
 @login_required
