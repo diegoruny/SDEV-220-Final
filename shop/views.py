@@ -5,16 +5,24 @@ from django.contrib.auth.decorators import login_required
 # Create your views here.
 def product_list(request):
     """Display a list of available coffee products."""
-    # customer, created = Customer.objects.get_or_create(user=request.user)
-    # points = customer.return_points
+    if request.user.is_authenticated:
+        customer, created = Customer.objects.get_or_create(user=request.user)
+        points = customer.return_points
+    else:
+        customer = None
+        points = 0
     products = Product.objects.all()
-    context = {'products': products}
+    context = {'products': products, 'points': points}
     return render(request, 'shop/product_list.html', context = context)
 
 def product_detail(request, product_id):
     """Display product details."""
-    customer, created = Customer.objects.get_or_create(user=request.user)
-    points = customer.return_points
+    if request.user.is_authenticated:
+        customer, created = Customer.objects.get_or_create(user=request.user)
+        points = customer.return_points
+    else:
+        customer = None
+        points = 0
     product = get_object_or_404(Product, id=product_id)
     context = {'product': product,'user' : customer, 'points' : points}
     return render(request, 'shop/product_detail.html', context = context)
@@ -23,14 +31,16 @@ def product_detail(request, product_id):
 @login_required
 def add_to_cart(request, product_id):
     """Add a product to the shopping cart."""
-    product = get_object_or_404(Product, id=product_id)
-    customer, created = Customer.objects.get_or_create(user=request.user)
-    order, created = Order.objects.get_or_create(customer=customer, complete=False)
-    order_item, created = OrderItem.objects.get_or_create(order=order, product=product)
-    order_item.quantity += 1
-    order_item.save()
-    return redirect('shop:login')
-    # return redirect('shop:cart') Allow users to stay on the product list without having to go the cart
+    if request.user.is_authenticated:
+        product = get_object_or_404(Product, id=product_id)
+        customer, created = Customer.objects.get_or_create(user=request.user)
+        order, created = Order.objects.get_or_create(customer=customer, complete=False)
+        order_item, created = OrderItem.objects.get_or_create(order=order, product=product)
+        order_item.quantity += 1
+        order_item.save()
+        return redirect('shop:cart') #Allow users to stay on the product list without having to go the cart
+    else:
+        return redirect('shop:login')
 
 @login_required
 def cart(request):
@@ -54,7 +64,8 @@ def checkout(request):
         order.reward_points() # add points to user account
         order.complete = True
         order.save()
-        return redirect('shop:product_list')
+        context = {'order': order, 'points' : points}
+        return render(request,'shop/order_complete.html',context)
     context = {'order': order, 'points' : points}
     return render(request, 'shop/checkout.html', context)
 

@@ -47,8 +47,8 @@
         <div class="pb-2 mb-2 border-bottom">
             {% if user.is_authenticated %}
                 <b style="margin-left: 40px">Your points: {{ points }}</b>
-                
             {% endif %}
+
             {% block content %}  {% endblock content %}
         </div>
     </main>

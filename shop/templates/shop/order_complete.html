@@ -1,0 +1,16 @@
+{% extends 'shop/base.html' %}
+{% load static %}
+
+{% block title %}Order submitted{% endblock %}
+
+{% block content %}
+<div class="container my-5">
+    <div class="row">
+        <div class="col-md-6">
+            <h3>Your order has been successfully submitted.</h3>
+            <h4>You earned {{ order.get_cart_point_total }} points!</h4>
+            <a href="{% url 'shop:product_list' %}" class="btn btn-primary">Back</a>
+        </div>
+    </div>
+</div>
+{% endblock %}
