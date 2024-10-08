@@ -12,7 +12,7 @@ def product_list(request):
         customer = None
         points = 0
     products = Product.objects.all()
-    context = {'products': products}
+    context = {'products': products, 'points': points}
     return render(request, 'shop/product_list.html', context = context)
 
 def product_detail(request, product_id):
