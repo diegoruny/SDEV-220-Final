@@ -1,16 +1,41 @@
 {% extends "shop/base.html" %}
 
 {% block content %}
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <div class="card shadow">
+                <div class="card-body">
+                    <h2 class="card-title text-center mb-4">Register</h2>
+                    
+                    <div class="alert alert-info" role="alert">
+                        Create an account to start shopping and earn points!
+                    </div>
 
-    <div class="p-3 mb-4 bg-light border rounded-3">
-        <div class="container-fluid py-3">
-            <h1 class="display-5 fw-bold">Register</h1>
-            <form method="post" action="{% url 'accounts:register' %}" class="lead">
-                {% csrf_token %}
-                {{ form.as_div }}
-                <button type="submit">Register</button>
-            </form>
+                    <form method="post" action="{% url 'accounts:register' %}">
+                        {% csrf_token %}
+                        {% for field in form %}
+                            <div class="mb-3">
+                                {{ field.label_tag }}
+                                <div class="form-control">
+                                    {{ field }}
+                                </div>
+                                {% if field.help_text %}
+                                    <small class="form-text text-muted">{{ field.help_text }}</small>
+                                {% endif %}
+                                {% for error in field.errors %}
+                                    <div class="text-danger">{{ error }}</div>
+                                {% endfor %}
+                            </div>
+                        {% endfor %}
+                        <div class="d-grid">
+                            <button type="submit" class="btn btn-primary">Register</button>
+                        </div>
+                    </form>
+                    <p class="text-center mt-3">Already have an account? <a href="{% url 'accounts:login' %}">Login here</a></p>
+                </div>
+            </div>
         </div>
     </div>
-
+</div>
 {% endblock content %}

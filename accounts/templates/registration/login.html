@@ -1,13 +1,17 @@
 {% extends "shop/base.html" %}
 
 {% block content %}
+<h2 class="card-title text-center mb-4">Login</h2>
 {% if form.errors %}
     <p class="text-danger text-center">Your username and password didn't match. Please try again.</p>
 {% endif %}
-
+<div class="alert alert-info" role="alert">
+    Please login or register to add items to your cart.
+</div>
 <form action="{% url 'accounts:login' %}" method="post" class="text-center mx-auto" style="width: 50%;">
     {% csrf_token %}
     {{ form.as_div }}
     <button type="submit" class="btn btn-primary mt-3">Login</button>
 </form>
+<p class="text-center mt-3">Don't have an account? <a href="{% url 'accounts:register' %}">Register here</a></p>
 {% endblock %}
